@@ -15,46 +15,24 @@ app.use(express.static(publicDir))
 
 
 io.on('connection', (socket) => {
-    // console.log("new websocket connection")
+    console.log("new websocket connection")
 
-    socket.on('join', (options, callback) => {
-        const {error, user} = addUser({id: socket.id, ...options})
-        if (error) {
-            return callback(error)
-        }
+    socket.on('driverLocation', (data) => {
+        console.log(`Driver ${data.driverId} location: `, data.location);
+        // Broadcast the driver's location to the specific customer
+        io.to(data.customerId).emit('driverLocationUpdate', data);
+    });
 
-        socket.join(user.room)
-        socket.emit('message', generateMessage(user.username, 'Welcome! '+user.username))
-        socket.broadcast.to(user.room).emit('message', generateMessage(user.username,`${user.username} has joined`))
-        io.to(user.room).emit('roomData', {
-            room: user.room,
-            users: getUsersInRoom(user.room)
-        })
-        callback()
-    })
+    // Listen for the customer joining the room
+    socket.on('joinRoom', (roomId) => {
+        console.log(`User ${socket.id} joined room ${roomId}`);
+        socket.join(roomId);
+    });
 
-    socket.on('sendMessage', (message, callback) => {
-        const user = getUser(socket.id)
-        io.to(user.room).emit('message', generateMessage(user.username, message))
-        callback()
-    })
-
+    // Handle client disconnection
     socket.on('disconnect', () => {
-        const user = removeUser(socket.id)
-        if (user) {
-            io.to(user.room).emit('message', generateMessage(user.username, `${user.username} has left`))
-            io.to(user.room).emit('roomData', {
-                room: user.room,
-                users: getUsersInRoom(user.room)
-            })
-        }
-    })
-
-    socket.on('sendLocation', (location, callback) => {
-        const user = getUser(socket.id)
-        io.to(user.room).emit('sendLocationURL', generateLocationMessage(user.username, location))
-        callback()
-    })
+        console.log('User disconnected:', socket.id);
+    });
 })
 
 
