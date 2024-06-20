@@ -10,7 +10,7 @@
   <input type="text" id="customerId" placeholder="Enter customer ID" />
 </div>
 <button onclick="joinRoom()">Join Room</button>
-<div id="tripCost"></div>
+<div id="tripFee"></div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -26,8 +26,8 @@
 
     socket.emit('joinRoom', customerId);
 
-    socket.on('tripFeeUpdate', (data) => {
-      const tripCostDiv = document.getElementById('tripCost');
+    socket.on('driverTripFeeUpdate', (data) => {
+      const tripCostDiv = document.getElementById('tripFee');
       tripCostDiv.textContent = `Driver ${data.driverId} trip cost: $${data.tripFee}`;
     });
   }
