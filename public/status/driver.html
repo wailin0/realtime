@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Driver Interface</title>
+</head>
+<body>
+<h1>Driver Interface</h1>
+<div>
+  <label for="driverId">Driver ID: </label>
+  <input type="text" id="driverId" placeholder="Enter driver ID" />
+</div>
+<div>
+  <label for="customerId">Customer ID: </label>
+  <input type="text" id="customerId" placeholder="Enter customer ID" />
+</div>
+<button onclick="startTrip()">Start Trip</button>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  const statuses = ['Starting', 'In Progress', 'Completed', 'Cancelled'];
+
+  function getRandomStatus() {
+    return statuses[Math.floor(Math.random() * statuses.length)];
+  }
+
+  function startTrip() {
+    const driverId = document.getElementById('driverId').value;
+    const customerId = document.getElementById('customerId').value;
+
+    if (!driverId || !customerId) {
+      alert('Please enter both driver ID and customer ID');
+      return;
+    }
+
+    // Send random trip status updates every 2 seconds
+    setInterval(() => {
+      const status = getRandomStatus();
+      socket.emit('tripStatus', { driverId, customerId, status });
+    }, 2000); // Send status every 2 seconds
+  }
+</script>
+</body>
+</html>
