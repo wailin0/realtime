@@ -11,6 +11,10 @@
 </div>
 <button onclick="joinRoom()">Join Room</button>
 <div id="location"></div>
+<div id="tripFee"></div>
+<div id="totalTraveled"></div>
+<div id="waitingTime"></div>
+<div id="duration"></div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -29,6 +33,18 @@
     socket.on('driverLocationUpdate', (data) => {
       const locationDiv = document.getElementById('location');
       locationDiv.textContent = `Driver ${data.driverId} is at latitude: ${data.location.lat}, longitude: ${data.location.lng}`;
+    });
+
+    socket.on('driverTripInfoUpdate', (data) => {
+      const tripCostDiv = document.getElementById('tripFee');
+      tripCostDiv.textContent = `Driver ${data.driverId} trip cost: $${data.tripFee}`;
+      const totalTraveledDiv = document.getElementById('totalTraveled');
+      totalTraveledDiv.textContent = `Driver ${data.driverId} totalTraveled : ${data.totalTraveled}`;
+      const waitingTimeDiv = document.getElementById('waitingTime');
+      waitingTimeDiv.textContent = `Driver ${data.driverId} waitingTime : ${data.waitingTime}`;
+      const durationDiv = document.getElementById('duration');
+      durationDiv.textContent = `Driver ${data.driverId} duration : ${data.duration}`;
+
     });
   }
 </script>
