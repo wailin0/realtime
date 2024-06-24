@@ -50,7 +50,7 @@ app.use(function(req,res,next){
     next();
 });
 
-app.post('/sendTripComplete', (req, res) => {
+app.post('/sendTripStatus', (req, res) => {
     req.io.to(req.body.customerId).emit('tripStatusUpdate', req.body );
 
     res.send('Message sent to all clients');
