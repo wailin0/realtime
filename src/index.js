@@ -15,12 +15,22 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(express.static(publicDir))
 
+let driverList = {};
+
+
 io.on('connection', (socket) => {
-    console.log("new websocket connection")
 
     //driver sending location
     socket.on('driverLocation', (data) => {
         io.to(data.customerId).emit('driverLocationUpdate', data);
+    });
+
+    socket.on('reportLocation', (data) => {
+        // data should include driverId and location info
+        driverList[data.driverId] = {socketId: socket.id, ...data};
+
+        // Broadcast the updated locations to all connected clients
+        io.emit('allDriverLocation', Object.values(driverList));
     });
 
     //driver sending fee
@@ -34,26 +44,30 @@ io.on('connection', (socket) => {
 
     // Listen for the customer joining the room
     socket.on('joinRoom', (roomId) => {
-        console.log(`User ${socket.id} joined room ${roomId}`);
         socket.join(roomId);
     });
 
 
     // Handle socket client disconnection
     socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id);
+        const driverToRemove = Object.values(driverList).find(driver => driver.socketId === socket.id);
+        if (driverToRemove) {
+            delete driverList[driverToRemove.driverId];
+            // Broadcast the updated driverList to all connected clients after removal
+            io.emit('allDriverLocation', Object.values(driverList));
+        }
     });
 })
 
-app.use(function(req,res,next){
+app.use(function (req, res, next) {
     req.io = io;
     next();
 });
 
 app.post('/sendTripStatus', (req, res) => {
-    req.io.to(req.body.customerId).emit('tripStatusUpdate', req.body );
+    req.io.to(req.body.customerId).emit('tripStatusUpdate', req.body);
 
-    res.send('Message sent to all clients');
+    res.send('Message sent to client');
 });
 
 server.listen(PORT, () => {

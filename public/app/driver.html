@@ -90,7 +90,7 @@
             socket.emit('tripStatus', {
                 driverId,
                 customerId,
-                tripStatus: getRandom()
+                tripStatus: 'driving'
             });
         }, 2000); // Send trip fee every 2 seconds
     }

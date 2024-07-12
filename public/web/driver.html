@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Web App</title>
+</head>
+<body>
+<h1>Driver Web App</h1>
+<label for="driverId">Driver ID:</label>
+<input type="text" id="driverId" required>
+<br>
+<label for="driverName">Driver Name:</label>
+<input type="text" id="driverName" required>
+<br>
+<button id="startSending">Start Sending Location</button>
+<button id="stopSending">Stop Sending Location</button>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    let interval;
+
+    document.getElementById('startSending').addEventListener('click', () => {
+        const driverId = document.getElementById('driverId').value;
+        const name = document.getElementById('driverName').value;
+
+        if (!driverId || !name) {
+            alert('Please enter both driver ID and name');
+            return;
+        }
+
+        if (!interval) {
+            interval = setInterval(() => {
+                const randomLatitude = (Math.random() * 180 - 90).toFixed(6);
+                const randomLongitude = (Math.random() * 360 - 180).toFixed(6);
+                const location = { latitude: randomLatitude, longitude: randomLongitude };
+                socket.emit('reportLocation', { driverId, name, vehicleNo: "ABC12345", location });
+            }, 1000);
+        }
+    });
+
+    document.getElementById('stopSending').addEventListener('click', () => {
+        if (interval) {
+            clearInterval(interval);
+            interval = null;
+        }
+    });
+</script>
+</body>
+</html>
