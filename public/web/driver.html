@@ -13,6 +13,12 @@
 <label for="driverName">Driver Name:</label>
 <input type="text" id="driverName" required>
 <br>
+<label for="driverPhone">Driver Phone:</label>
+<input type="text" id="driverPhone" required>
+<br>
+<label for="vehicleNo">Vehicle Number:</label>
+<input type="text" id="vehicleNo" required>
+<br>
 <button id="startSending">Start Sending Location</button>
 <button id="stopSending">Stop Sending Location</button>
 
@@ -24,9 +30,11 @@
     document.getElementById('startSending').addEventListener('click', () => {
         const driverId = document.getElementById('driverId').value;
         const name = document.getElementById('driverName').value;
+        const phone = document.getElementById('driverPhone').value;
+        const vehicleNo = document.getElementById('vehicleNo').value;
 
-        if (!driverId || !name) {
-            alert('Please enter both driver ID and name');
+        if (!driverId || !name || !phone || !vehicleNo) {
+            alert('Please enter all required fields');
             return;
         }
 
@@ -35,7 +43,7 @@
                 const randomLatitude = (Math.random() * 180 - 90).toFixed(6);
                 const randomLongitude = (Math.random() * 360 - 180).toFixed(6);
                 const location = { latitude: randomLatitude, longitude: randomLongitude };
-                socket.emit('reportLocation', { driverId, name, vehicleNo: "ABC12345", location });
+                socket.emit('reportLocation', { driverId, name, phone, vehicleNo, location });
             }, 1000);
         }
     });

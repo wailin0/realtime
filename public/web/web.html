@@ -18,9 +18,9 @@
         driversList.innerHTML = '';
 
         drivers.forEach(driver => {
-            const { driverId, name, vehicleNo, location } = driver;
+            const { driverId, name, vehicleNo, phone, location } = driver;
             const listItem = document.createElement('li');
-            listItem.textContent = `Driver ID: ${driverId}, Name: ${name}, Vehicle: ${vehicleNo}, Location: (${location.latitude}, ${location.longitude})`;
+            listItem.textContent = `Driver ID: ${driverId}, Name: ${name}, Vehicle: ${vehicleNo}, Phone: ${phone},  Location: (${location.latitude}, ${location.longitude})`;
             driversList.appendChild(listItem);
         });
     });
