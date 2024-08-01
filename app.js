@@ -81,5 +81,9 @@ app.post('/sendTripStatus', (req, res) => {
     res.send('Message sent to client');
 });
 
+const PORT = process.env.PORT || 3000
 
-module.exports = app;
+server.listen(PORT, () => {
+    console.log('Server is up at ' + PORT)
+})
+

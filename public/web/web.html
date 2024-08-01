@@ -11,7 +11,7 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    const socket = io("http://13.212.113.174");
+    const socket = io();
 
     socket.on('allDriverLocation', (drivers) => {
         const driversList = document.getElementById('driversList');
