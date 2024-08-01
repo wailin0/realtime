@@ -10,7 +10,7 @@ var router = express.Router();
 
 router.post("/signin", async (req, res) => {
     try {
-        const {phone, password} = req.body.input;
+        const {phone, password, fcm_token} = req.body.input;
         if (phone && password) {
             const existingUser = await knex('drivers').where('phone', phone)
             if (existingUser.length === 0) {
@@ -23,6 +23,9 @@ router.post("/signin", async (req, res) => {
                     if (!match) {
                         return res.status(401).json({message: "invalid password"});
                     } else {
+                        await knex('drivers').update({
+                            fcm_token
+                        }).where('id', existingUser[0].id)
                         const token = createHasuraJWT(existingUser[0].id, existingUser[0].role)
                         return res.status(200).json({token})
                     }
