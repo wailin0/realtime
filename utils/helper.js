@@ -14,7 +14,7 @@ const createHasuraJWT = (userId, role) => {
 }
 
 
-export function generateDriverId(driverId) {
+function generateDriverId(driverId) {
     // Convert the string ID to an integer
     let numericId = parseInt(driverId, 10);
 
