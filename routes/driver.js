@@ -10,7 +10,7 @@ var router = express.Router();
 
 router.post("/signin", async (req, res) => {
     try {
-        const {phone, password, fcm_token} = req.body.input;
+        const {phone, password, fcm_token} = req.body;
         if (phone && password) {
             const existingUser = await knex('drivers').where('phone', phone)
             if (existingUser.length === 0) {
@@ -42,7 +42,7 @@ router.post("/signin", async (req, res) => {
 
 router.post("/signup", async (req, res) => {
     try {
-        const {name, phone, password} = req.body.input;
+        const {name, phone, password} = req.body;
         if (name && phone && password) {
             const existingUser = await knex('drivers').where('phone', phone)
             if (existingUser.length !== 0) {
@@ -69,7 +69,7 @@ router.post("/signup", async (req, res) => {
 
 router.post("/update-password", authenticateUserToken, async (req, res) => {
     try {
-        const {oldPassword, newPassword, confirmNewPassword} = req.body.input;
+        const {oldPassword, newPassword, confirmNewPassword} = req.body;
         const user_id = req.user_id
 
         if (oldPassword && newPassword && confirmNewPassword) {
